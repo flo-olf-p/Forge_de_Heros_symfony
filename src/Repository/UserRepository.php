@@ -57,4 +57,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function is_database_empty(): bool
+    {
+        $connexion = $this->getEntityManager()->getConnection();
+
+        $sql_query = 'SELECT COUNT(*) FROM user';
+
+        $result = $connexion->executeQuery($sql_query)->fetchOne();
+
+        if($result == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
