@@ -13,9 +13,18 @@ class ApiController extends AbstractController
     {
         return $this->render('home.html.twig');
     }
+
+    // Paths of the api
     #[Route('/api', name: 'api_home')]
     public function api_home() : Response
     {
         return $this->render('api/api.html.twig');
+    }
+
+    // Paths related to the admin
+    #[Route('/api/admin', name: 'api_admin')]
+    public function api_admin() : Response
+    {
+        return $this->render('api/admin.html.twig');
     }
 }
