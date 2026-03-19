@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -35,6 +38,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $username = null;
+
+    /**
+     * @var Collection<int, Character>
+     */
+    #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'character')]
+    private Collection $characters;
+
+    /**
+     * @var Collection<int, Party>
+     */
+    #[ORM\ManyToMany(targetEntity: Party::class, inversedBy: 'users')]
+    private Collection $user_party;
+
+    public function __construct()
+    {
+        $this->characters = new ArrayCollection();
+        $this->user_party = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -125,6 +146,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Character>
+     */
+    public function getCharacters(): Collection
+    {
+        return $this->characters;
+    }
+
+    public function addCharacter(Character $character): static
+    {
+        if (!$this->characters->contains($character)) {
+            $this->characters->add($character);
+            $character->setCharacter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCharacter(Character $character): static
+    {
+        if ($this->characters->removeElement($character)) {
+            // set the owning side to null (unless already changed)
+            if ($character->getCharacter() === $this) {
+                $character->setCharacter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Party>
+     */
+    public function getUserParty(): Collection
+    {
+        return $this->user_party;
+    }
+
+    public function addUserParty(Party $userParty): static
+    {
+        if (!$this->user_party->contains($userParty)) {
+            $this->user_party->add($userParty);
+        }
+
+        return $this;
+    }
+
+    public function removeUserParty(Party $userParty): static
+    {
+        $this->user_party->removeElement($userParty);
 
         return $this;
     }
