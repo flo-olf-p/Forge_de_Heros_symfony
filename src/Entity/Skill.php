@@ -6,6 +6,7 @@ use App\Repository\SkillRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EnumAbility;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
 class Skill
@@ -23,6 +24,9 @@ class Skill
      */
     #[ORM\ManyToMany(targetEntity: CharacterClass::class, mappedBy: 'skill_characterClass')]
     private Collection $characterClasses;
+
+    #[ORM\Column(enumType: EnumAbility::class)]
+    private ?EnumAbility $ability = null;
 
     public function __construct()
     {
@@ -72,4 +76,19 @@ class Skill
 
         return $this;
     }
+
+    public function getAbility(): ?EnumAbility
+    {
+        return $this->ability;
+    }
+
+    public function setAbility(EnumAbility $ability): static
+    {
+        $this->ability = $ability;
+
+        return $this;
+    }
 }
+
+
+
