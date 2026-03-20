@@ -7,24 +7,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EnumAbility;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
 class Skill
 {
+    #[Groups('character')]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    #[Groups('character')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, CharacterClass>
      */
+    #[Ignore]
     #[ORM\ManyToMany(targetEntity: CharacterClass::class, mappedBy: 'skill_characterClass')]
     private Collection $characterClasses;
-
+    #[Groups('character')]
     #[ORM\Column(enumType: EnumAbility::class)]
     private ?EnumAbility $ability = null;
 
