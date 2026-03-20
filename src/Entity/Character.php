@@ -6,6 +6,8 @@ use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: CharacterRepository::class)]
 class Character
@@ -13,35 +15,37 @@ class Character
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('character')]
     private ?int $id = null;
-
+    #[Groups('character')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $level = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $strength = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $dexterity = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $constitution = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $intelligence = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $wisdom = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $charisma = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $healthPoints = null;
 
+    #[Groups('character')]
     #[ORM\ManyToOne(inversedBy: 'characters')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -49,11 +53,16 @@ class Character
     /**
      * @var Collection<int, Party>
      */
+    #[Groups('character')]
     #[ORM\ManyToMany(targetEntity: Party::class, inversedBy: 'characters')]
     private Collection $party_character;
-
+    #[Groups('character')]
     #[ORM\ManyToOne(inversedBy: 'character')]
     private ?Race $race = null;
+    #[Groups('character')]
+    #[ORM\ManyToOne(inversedBy: 'class_characters')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?CharacterClass $class_character = null;
 
     public function __construct()
     {
@@ -217,6 +226,18 @@ class Character
     public function setRace(?Race $race): static
     {
         $this->race = $race;
+
+        return $this;
+    }
+
+    public function getClassCharacter(): ?CharacterClass
+    {
+        return $this->class_character;
+    }
+
+    public function setClassCharacter(?CharacterClass $class_character): static
+    {
+        $this->class_character = $class_character;
 
         return $this;
     }

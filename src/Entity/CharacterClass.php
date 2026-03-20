@@ -7,33 +7,46 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: CharacterClassRepository::class)]
 class CharacterClass
 {
+    #[Groups('character')]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+    #[Groups('character')]
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
-
+    #[Groups('character')]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
-
+    #[Groups('character')]
     #[ORM\Column]
     private ?int $healthDice = null;
 
     /**
      * @var Collection<int, Skill>
      */
+    #[Groups('character')]
     #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'characterClasses')]
     private Collection $skill_characterClass;
+
+    /**
+     * @var Collection<int, Character>
+     */
+    #[Ignore]
+    #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'class_character')]
+    private Collection $class_characters;
 
     public function __construct()
     {
         $this->skill_characterClass = new ArrayCollection();
+        $this->class_characters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,6 +110,36 @@ class CharacterClass
     public function removeSkillCharacterClass(Skill $skillCharacterClass): static
     {
         $this->skill_characterClass->removeElement($skillCharacterClass);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Character>
+     */
+    public function getClassCharacters(): Collection
+    {
+        return $this->class_characters;
+    }
+
+    public function addClassCharacter(Character $classCharacter): static
+    {
+        if (!$this->class_characters->contains($classCharacter)) {
+            $this->class_characters->add($classCharacter);
+            $classCharacter->setClassCharacter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClassCharacter(Character $classCharacter): static
+    {
+        if ($this->class_characters->removeElement($classCharacter)) {
+            // set the owning side to null (unless already changed)
+            if ($classCharacter->getClassCharacter() === $this) {
+                $classCharacter->setClassCharacter(null);
+            }
+        }
 
         return $this;
     }

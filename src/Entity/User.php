@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -18,35 +19,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('character')]
     private ?int $id = null;
-
+    #[Groups('character')]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
+    #[Groups('character')]
     #[ORM\Column]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
+    #[Groups('character')]
     #[ORM\Column]
     private ?string $password = null;
-
+    #[Groups('character')]
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
     /**
      * @var Collection<int, Character>
      */
+    #[Groups('user')]
     #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'character')]
     private Collection $characters;
 
     /**
      * @var Collection<int, Party>
      */
+    #[Groups('user')]
     #[ORM\ManyToMany(targetEntity: Party::class, inversedBy: 'users')]
     private Collection $user_party;
 
