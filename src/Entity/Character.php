@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: CharacterRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -271,5 +272,25 @@ class Character
     public function updateHealthPoints(): void
     {
         $this->healthPoints = $this->calculateHealthPoints();
+    }
+
+    public function checkStatsPoints(): bool
+    {
+        $baseStats = 48;
+        $availablePoints = 27;
+        $totalStats =  $this->getStrength() + $this->getDexterity() + $this->getConstitution() + $this->getIntelligence() + $this->getWisdom() + $this->getCharisma();
+
+        return ($totalStats - $baseStats) > $availablePoints;
+    }
+
+    // This function is called at the submission of a form
+    #[Constraints\Callback]
+    public function validateStatsPoints(ExecutionContextInterface $context, $payload): void
+    {
+        if ($this->checkStatsPoints())
+        {
+            $context->buildViolation('You attributed too much stats points to your character (over 27). You must remove some...')
+                ->addViolation();
+        }
     }
 }

@@ -18,13 +18,13 @@ class CharacterType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('level', null, ['attr' => ['min' => 1, 'max' => 20]])
-            ->add('strength', null, ['data' => 8, 'attr' => ['min' => 8, 'max' => 15]])
-            ->add('dexterity', null, ['data' => 8, 'attr' => ['min' => 8, 'max' => 15]])
-            ->add('constitution', null, ['data' => 8, 'attr' => ['min' => 8, 'max' => 15]])
-            ->add('intelligence', null, ['data' => 8, 'attr' => ['min' => 8, 'max' => 15]])
-            ->add('wisdom', null, ['data' => 8, 'attr' => ['min' => 8, 'max' => 15]])
-            ->add('charisma', null, ['data' => 8, 'attr' => ['min' => 8, 'max' => 15]])
+            ->add('level', null, ['attr' => ['min' => 1, 'max' => 20, 'placeholder' => 'from 1 to 20']])
+            ->add('strength', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
+            ->add('dexterity', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
+            ->add('constitution', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
+            ->add('intelligence', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
+            ->add('wisdom', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
+            ->add('charisma', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
             ->add('user', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'email',

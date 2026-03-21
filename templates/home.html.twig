@@ -3,4 +3,16 @@
 
 {% block body %}
     <h1>Welcome on our application!</h1>
+
+    {% if app.user %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+            <a href="{{ path('api_home') }}">Access to the API</a>
+            <a href="{{ path('app_character_index') }}">Access to your characters</a>
+            <a href="{{ path('admin_home') }}">Access to the admin corner</a>
+        {% elseif 'ROLE_USER' in app.user.roles %}
+            <a href="{{ path('api_home') }}">Access to the API</a>
+            <a href="{{ path('app_character_index') }}">Access to your characters</a>
+        {% endif %}
+    {% endif %}
+
 {% endblock %}

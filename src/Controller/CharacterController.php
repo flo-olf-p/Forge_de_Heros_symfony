@@ -28,6 +28,7 @@ final class CharacterController extends AbstractController
     {
         $character = new Character();
         $character->updateHealthPoints();
+
         $form = $this->createForm(CharacterType::class, $character);
         $form->handleRequest($request);
 
