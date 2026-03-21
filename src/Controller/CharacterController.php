@@ -3,43 +3,81 @@
 namespace App\Controller;
 
 use App\Entity\Character;
-use App\Form\CharacterCreationFormType;
+use App\Form\CharacterType;
+use App\Repository\CharacterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class CharacterController extends AbstractController
+#[Route('/character')]
+final class CharacterController extends AbstractController
 {
-    // Paths related to the characters
-
-    // Returns the list of all characters of the user
-    #[Route('/characters', name: 'character_home')]
-    public function character_home() : Response
+    #[Route(name: 'app_character_index', methods: ['GET'])]
+    public function index(CharacterRepository $characterRepository): Response
     {
-        return $this->render('character/characters.html.twig');
-    }
-
-    #[Route('/character/create', name: 'character_create')]
-    public function character_create(Request $request, EntityManagerInterface $entityManager) : Response
-    {
-        $character = new Character();
-        $form = $this->createForm(CharacterCreationFormType::class, $character);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            // Add the user into the database
-            $entityManager->persist($character);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('character_home');
-        }
-
-        return $this->render('character/create.html.twig', [
-            'creationForm' => $form,
+        // Returns all the characters created by the connected user
+        return $this->render('character/index.html.twig', [
+            'characters' => $characterRepository->findBy(['user' => $this->getUser()], ['name' => 'ASC']),
         ]);
     }
 
+    #[Route('/new', name: 'app_character_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $character = new Character();
+        $character->updateHealthPoints();
+        $form = $this->createForm(CharacterType::class, $character);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($character);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('character/new.html.twig', [
+            'character' => $character,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_character_show', methods: ['GET'])]
+    public function show(Character $character): Response
+    {
+        return $this->render('character/show.html.twig', [
+            'character' => $character,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_character_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Character $character, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(CharacterType::class, $character);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('character/edit.html.twig', [
+            'character' => $character,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_character_delete', methods: ['POST'])]
+    public function delete(Request $request, Character $character, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$character->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($character);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
+    }
 }

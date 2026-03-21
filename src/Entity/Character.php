@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Validator\Constraints;
 
 #[ORM\Entity(repositoryClass: CharacterRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Character
 {
     #[ORM\Id]
@@ -25,21 +27,33 @@ class Character
     private ?int $level = null;
     #[Groups('character')]
     #[ORM\Column]
+    #[Constraints\GreaterThanOrEqual(8)]
+    #[Constraints\LessThanOrEqual(15)]
     private ?int $strength = null;
     #[Groups('character')]
     #[ORM\Column]
+    #[Constraints\GreaterThanOrEqual(8)]
+    #[Constraints\LessThanOrEqual(15)]
     private ?int $dexterity = null;
     #[Groups('character')]
     #[ORM\Column]
+    #[Constraints\GreaterThanOrEqual(8)]
+    #[Constraints\LessThanOrEqual(15)]
     private ?int $constitution = null;
     #[Groups('character')]
     #[ORM\Column]
+    #[Constraints\GreaterThanOrEqual(8)]
+    #[Constraints\LessThanOrEqual(15)]
     private ?int $intelligence = null;
     #[Groups('character')]
     #[ORM\Column]
+    #[Constraints\GreaterThanOrEqual(8)]
+    #[Constraints\LessThanOrEqual(15)]
     private ?int $wisdom = null;
     #[Groups('character')]
     #[ORM\Column]
+    #[Constraints\GreaterThanOrEqual(8)]
+    #[Constraints\LessThanOrEqual(15)]
     private ?int $charisma = null;
     #[Groups('character')]
     #[ORM\Column]
@@ -240,5 +254,22 @@ class Character
         $this->class_character = $class_character;
 
         return $this;
+    }
+
+
+    public function calculateHealthPoints(): ?int
+    {
+        if($this->getClassCharacter() !== null && $this->getClassCharacter()->getHealthDice() !== null)
+        {
+            return $this->getClassCharacter()->getHealthDice() + floor(($this->getConstitution() - 10) / 2);
+        }
+        return floor(($this->getConstitution() - 10) / 2);
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateHealthPoints(): void
+    {
+        $this->healthPoints = $this->calculateHealthPoints();
     }
 }
