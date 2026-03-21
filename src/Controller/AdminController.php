@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Race;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +26,5 @@ class AdminController extends AbstractController
         $users = $repository->findAll();
         return $this->render('admin/admin_allUsers.html.twig', ['users' => $users]);
     }
-
 
 }
