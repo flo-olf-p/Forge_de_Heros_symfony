@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\CharacterClass;
 use App\Entity\Skill;
+use phpDocumentor\Reflection\PseudoTypes\ValueOf;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +20,9 @@ class CharacterClassType extends AbstractType
             ->add('healthDice')
             ->add('skill_characterClass', EntityType::class, [
                 'class' => Skill::class,
-                'choice_label' => 'id',
+                'choice_label' => function (Skill $skill) {
+                return $skill->getName() . ' (' . $skill->getAbility()->value . ')';
+                },
                 'multiple' => true,
             ])
         ;
