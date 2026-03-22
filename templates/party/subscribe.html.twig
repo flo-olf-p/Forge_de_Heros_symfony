@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Join Party</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.character) }}
+    <button class="btn">Join</button>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

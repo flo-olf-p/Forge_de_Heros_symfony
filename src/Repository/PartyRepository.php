@@ -40,4 +40,24 @@ class PartyRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findAvailable()
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.characters', 'c')
+            ->groupBy('p.id')
+            ->having('COUNT(c) < p.maxSize')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findFull()
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.characters', 'c')
+            ->groupBy('p.id')
+            ->having('COUNT(c) >= p.maxSize')
+            ->getQuery()
+            ->getResult();
+    }
 }
