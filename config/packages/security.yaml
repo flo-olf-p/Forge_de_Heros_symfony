@@ -38,6 +38,7 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/character, roles: ROLE_USER }
         - { path: ^/user, roles: ROLE_USER }
 
 

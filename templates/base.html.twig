@@ -18,10 +18,21 @@
             {% if app.user %}
                 <span>{{ app.user.userIdentifier }}</span>
                 <a href="{{ path('app_logout') }}">Logout</a>
+
+                {% if 'ROLE_ADMIN' in app.user.roles %}
+                <a href="{{ path('api_home') }}">API</a>
+                <a href="{{ path('app_character_index') }}">Your characters</a>
+                <a href="{{ path('admin_home') }}">Admin</a>
+            {% elseif 'ROLE_USER' in app.user.roles %}
+                <a href="{{ path('api_home') }}">API</a>
+                <a href="{{ path('app_character_index') }}">Your characters</a>
+            {% endif %}
+
             {% else %}
                 <a href="{{ path('app_login') }}">Login</a>
                 <a href="{{ path('app_register') }}">Register</a>
             {% endif %}
+
         </nav>
     </header>
     <body>
