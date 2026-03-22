@@ -1,0 +1,15 @@
+
+{% if app.user and party.users.contains(app.user) %}
+    <form method="post" action="{{ path('app_party_unsubscribe', {'id': party.id}) }}" onsubmit="return confirm('Are you sure you want to register for this part?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe' ~ party.id) }}">
+        <button class="btn">Unsubscribe</button>
+    </form>
+{% elseif size < party.maxSize %}
+
+    <form method="get" action="{{ path('app_party_subscribe', {'id': party.id}) }}">
+            <button class="btn">Subscribe</button>
+        </form>
+
+{% else %}
+    <p>Party full</p>
+{% endif %}
