@@ -40,4 +40,32 @@ class CharacterRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByClassAndUser(string $class, $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.character_class = :class')
+            ->andWhere('c.user = :user')
+
+            ->setParameter('class', $class)
+            ->setParameter('user', $user)
+
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByRaceAndUser(string $race, $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.race = :race')
+            ->andWhere('c.user = :user')
+
+            ->setParameter('race', $race)
+            ->setParameter('user', $user)
+
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
