@@ -49,7 +49,7 @@ final class PartyController extends AbstractController
             $party = $form->getData();
             $user = $this->getUser();
 
-            $selectedCharacter = $form->get('characters')->getData(); // un seul Character
+            $selectedCharacter = $form->get('characters')->getData();
             $party->addCharacter($selectedCharacter);
             $party->addUser($user);
 

@@ -40,4 +40,16 @@ class CharacterRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByNameAndUser(string $name, $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.name LIKE :search')
+            ->andWhere('c.user = :user')
+            ->setParameter('search', '%' . $name . '%')
+            ->setParameter('user', $user)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
