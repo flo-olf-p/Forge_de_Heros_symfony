@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Party index{% endblock %}
+
+{% block body %}
+    <h1>Party index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>MaxSize</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <a href="{{ path('app_party_index') }}" class="btn">All</a>
+        <a href="{{ path('app_party_index', {filter: 'available'}) }}" class="btn">Available</a>
+        <a href="{{ path('app_party_index', {filter: 'full'}) }}" class="btn">Full</a>
+        {% for party in parties %}
+            <tr>
+                <td>{{ party.id }}</td>
+                <td>{{ party.name }}</td>
+                <td>{{ party.description }}</td>
+                <td>{{ party.maxSize }}</td>
+                <td>
+                    <a href="{{ path('app_party_show', {'id': party.id}) }}">show</a>
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_party_new') }}">Create new</a>
+{% endblock %}
