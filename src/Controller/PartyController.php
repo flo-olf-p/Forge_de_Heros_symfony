@@ -46,9 +46,13 @@ final class PartyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $party = $form->getData();
             $user = $this->getUser();
 
+            $selectedCharacter = $form->get('characters')->getData(); // un seul Character
+            $party->addCharacter($selectedCharacter);
             $party->addUser($user);
+
             $entityManager->persist($party);
             $entityManager->flush();
 

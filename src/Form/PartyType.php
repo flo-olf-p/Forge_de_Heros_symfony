@@ -22,15 +22,13 @@ class PartyType extends AbstractType
             ->add('maxSize')
             ->add('characters', EntityType::class, [
                 'class' => Character::class,
-                'choice_label' => function (Character $character) {
-                return $character->getName() . ' (' . $character->getClassCharacter()->getName() . ')';
-                },
-                'multiple' => true,
-                'query_builder' => function (EntityRepository $er) use ($user) {
-                return $er->createQueryBuilder('c')
+                'choice_label' => fn($c) => $c->getName() . ' (' . $c->getClassCharacter()->getName() . ')',
+                'multiple' => false, // un seul choix
+                'expanded' => false,
+                'mapped' => false,
+                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('c')
                     ->where('c.user = :user')
-                    ->setParameter('user', $user);
-                },
+                    ->setParameter('user', $options['user']),
             ])
         ;
     }

@@ -4,7 +4,7 @@
         <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe' ~ party.id) }}">
         <button class="btn">Unsubscribe</button>
     </form>
-{% elseif size < party.maxSize %}
+{% elseif size != 0 %}
 
     <form method="get" action="{{ path('app_party_subscribe', {'id': party.id}) }}">
             <button class="btn">Subscribe</button>

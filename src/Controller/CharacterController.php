@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/character')]
+#[Route('/user/character')]
 final class CharacterController extends AbstractController
 {
     #[Route(name: 'app_character_index', methods: ['GET'])]
@@ -31,6 +31,7 @@ final class CharacterController extends AbstractController
     #[Route('/new', name: 'app_character_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/avatars')] string $avatarDirectory): Response
     {
+        $user = $this->getUser();
         $character = new Character();
         $character->updateHealthPoints();
 
@@ -39,6 +40,7 @@ final class CharacterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
+            $character->setUser($user);
             /** @var UploadedFile $AvatarFile */
             $AvatarFile = $form->get('avatarFile')->getData();
 

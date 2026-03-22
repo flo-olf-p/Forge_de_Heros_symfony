@@ -27,15 +27,6 @@ class CharacterType extends AbstractType
             ->add('intelligence', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
             ->add('wisdom', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
             ->add('charisma', null, ['attr' => ['min' => 8, 'max' => 15, 'placeholder' => 'from 8 to 15']])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email',
-            ])
-            ->add('party_character', EntityType::class, [
-                'class' => Party::class,
-                'choice_label' => 'name',
-                'multiple' => true,
-            ])
             ->add('race', EntityType::class, [
                 'class' => Race::class,
                 'choice_label' => 'name',
