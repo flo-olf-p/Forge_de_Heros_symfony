@@ -7,9 +7,14 @@ use App\Form\CharacterType;
 use App\Repository\CharacterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/character')]
 final class CharacterController extends AbstractController
@@ -24,7 +29,7 @@ final class CharacterController extends AbstractController
     }
 
     #[Route('/new', name: 'app_character_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/avatars')] string $avatarDirectory): Response
     {
         $character = new Character();
         $character->updateHealthPoints();
@@ -32,7 +37,31 @@ final class CharacterController extends AbstractController
         $form = $this->createForm(CharacterType::class, $character);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            /** @var UploadedFile $AvatarFile */
+            $AvatarFile = $form->get('avatarFile')->getData();
+
+            if ($AvatarFile)
+            {
+                $originalFilename = pathinfo($AvatarFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$AvatarFile->guessExtension();
+
+                // Move the file to the directory where avatar are stored
+                try
+                {
+                    $AvatarFile->move($avatarDirectory, $newFilename);
+                }
+                catch (FileException $e)
+                {
+
+                }
+
+                $character->setAvatarFileName($newFilename);
+            }
+
             $entityManager->persist($character);
             $entityManager->flush();
 
@@ -54,10 +83,15 @@ final class CharacterController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_character_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Character $character, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Character $character, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%/public/uploads/avatars')] string $avatarDirectory): Response
     {
         $form = $this->createForm(CharacterType::class, $character);
         $form->handleRequest($request);
+
+        if (!$form->isSubmitted() && $character->getAvatarFileName())
+        {
+            $form->setData(['avatarFile' => new File($avatarDirectory.DIRECTORY_SEPARATOR.$character->getAvatarFileName())]);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();

@@ -79,6 +79,9 @@ class Character
     #[ORM\JoinColumn(nullable: false)]
     private ?CharacterClass $class_character = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $AvatarFileName = null;
+
     public function __construct()
     {
         $this->party_character = new ArrayCollection();
@@ -292,5 +295,17 @@ class Character
             $context->buildViolation('You attributed too much stats points to your character (over 27). You must remove some...')
                 ->addViolation();
         }
+    }
+
+    public function getAvatarFileName(): ?string
+    {
+        return $this->AvatarFileName;
+    }
+
+    public function setAvatarFileName(?string $AvatarFileName): self
+    {
+        $this->AvatarFileName = $AvatarFileName;
+
+        return $this;
     }
 }

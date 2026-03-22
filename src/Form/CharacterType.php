@@ -9,8 +9,10 @@ use App\Entity\Race;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints;
 
 class CharacterType extends AbstractType
 {
@@ -41,6 +43,16 @@ class CharacterType extends AbstractType
             ->add('class_character', EntityType::class, [
                 'class' => CharacterClass::class,
                 'choice_label' => 'name',
+            ])
+
+            ->add('avatarFile', FileType::class, [
+                'label' => 'Avatar (Image File)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new Constraints\File(extensions: ['png', 'jpg', 'jpeg'], extensionsMessage: 'Please upload a valid image file.'),
+
+                ]
             ])
         ;
     }
