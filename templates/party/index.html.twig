@@ -16,6 +16,9 @@
             </tr>
         </thead>
         <tbody>
+        <a href="{{ path('app_party_index') }}" class="btn">All</a>
+        <a href="{{ path('app_party_index', {filter: 'available'}) }}" class="btn">Available</a>
+        <a href="{{ path('app_party_index', {filter: 'full'}) }}" class="btn">Full</a>
         {% for party in parties %}
             <tr>
                 <td>{{ party.id }}</td>

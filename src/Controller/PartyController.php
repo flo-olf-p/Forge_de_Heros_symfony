@@ -18,10 +18,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PartyController extends AbstractController
 {
     #[Route(name: 'app_party_index', methods: ['GET'])]
-    public function index(PartyRepository $partyRepository): Response
+    public function index(Request $request, PartyRepository $partyRepository): Response
     {
+
+        $filter = $request->query->get('filter');
+
+        if ($filter === 'available') {
+            $parties = $partyRepository->findAvailable();
+        } elseif ($filter === 'full') {
+            $parties = $partyRepository->findFull();
+        } else {
+            $parties = $partyRepository->findAll();
+        }
         return $this->render('party/index.html.twig', [
-            'parties' => $partyRepository->findAll(),
+            'parties' => $parties,
+            'filter' => $filter,
         ]);
     }
 
