@@ -30,7 +30,7 @@ final class CharacterController extends AbstractController
 
         $search = $request->query->get('search');
 
-        if($search)
+        /*if($search)
         {
             $characters = $characterRepository->findByNameAndUser($search, $user);
 
@@ -56,7 +56,9 @@ final class CharacterController extends AbstractController
             $characters = $characterRepository->findBy([
                 'user' => $user
             ], ['name' => 'ASC']);
-        }
+        }*/
+
+        $characters = $characterRepository->findByFilters($user, $search, $classId, $raceId);
 
         // Returns all the characters created by the connected user, with the option to filter by a class
         return $this->render('character/index.html.twig', [
@@ -130,22 +132,50 @@ final class CharacterController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_character_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Character $character, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%/public/uploads/avatars')] string $avatarDirectory): Response
+    public function edit(Request $request, Character $character, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/avatars')] string $avatarDirectory): Response
     {
         $user = $this->getUser();
+
+        // To make sure a user can only edit one of its own character
         if($character->getUser()->getId() !== $user->getId())
         {
             return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
         }
+
         $form = $this->createForm(CharacterType::class, $character);
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted() && $character->getAvatarFileName()) //&& $character->getAvatarFileName()
+        /*if (!$form->isSubmitted() && $character->getAvatarFileName())
         {
             $form->setData(['avatarFile' => new File($avatarDirectory.DIRECTORY_SEPARATOR.$character->getAvatarFileName())]);
-        }
+        }*/
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $avatarFile = $form->get('avatarFile')->getData();
+
+            if ($avatarFile)
+            {
+                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$avatarFile->guessExtension();
+
+                // Move the file to the directory where avatar are stored
+                try
+                {
+                    $avatarFile->move($avatarDirectory, $newFilename);
+                }
+                catch (FileException $e)
+                {
+
+                }
+
+                $character->setAvatarFileName($newFilename);
+
+
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);

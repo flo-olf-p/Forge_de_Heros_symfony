@@ -4,13 +4,13 @@
 
 {% block body %}
     <h1>Character index</h1>
-    <form method="get">
-        <input type="text" name="search" placeholder="Search for a character..." value="{{ app.request.get('search') }}">
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
 
-    <h3>Classes filter</h3>
     <form method="get">
+
+        <h3>Name search</h3>
+        <input type="text" name="search" placeholder="Search for a character..." value="{{ app.request.get('search') }}">
+
+        <h3>Classes filter</h3>
         <select name="class">
             <option value="">All classes</option>
             {% for class in classes %}
@@ -20,11 +20,7 @@
             {% endfor %}
         </select>
 
-        <button type="submit">Filter</button>
-    </form>
-
-    <h3>Races filter</h3>
-    <form method="get">
+        <h3>Races filter</h3>
         <select name="race">
             <option value="">All races</option>
             {% for race in races %}
@@ -34,7 +30,8 @@
             {% endfor %}
         </select>
 
-        <button type="submit">Filter</button>
+        <h3>Validation</h3>
+        <button type="submit">Search</button>
     </form>
 
     <table class="table">
