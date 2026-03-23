@@ -117,6 +117,13 @@ final class CharacterController extends AbstractController
     #[Route('/{id}', name: 'app_character_show', methods: ['GET'])]
     public function show(Character $character): Response
     {
+        $user = $this->getUser();
+        if($character->getUser()->getId() !== $user->getId())
+        {
+            return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+
         return $this->render('character/show.html.twig', [
             'character' => $character,
         ]);
@@ -125,6 +132,11 @@ final class CharacterController extends AbstractController
     #[Route('/{id}/edit', name: 'app_character_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Character $character, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%/public/uploads/avatars')] string $avatarDirectory): Response
     {
+        $user = $this->getUser();
+        if($character->getUser()->getId() !== $user->getId())
+        {
+            return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
+        }
         $form = $this->createForm(CharacterType::class, $character);
         $form->handleRequest($request);
 
@@ -148,6 +160,11 @@ final class CharacterController extends AbstractController
     #[Route('/{id}', name: 'app_character_delete', methods: ['POST'])]
     public function delete(Request $request, Character $character, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if($character->getUser()->getId() !== $user->getId())
+        {
+            return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid('delete'.$character->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($character);
             $entityManager->flush();
