@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Character;
 use App\Form\CharacterType;
+use App\Repository\CharacterClassRepository;
 use App\Repository\CharacterRepository;
+use App\Repository\RaceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -20,20 +22,45 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class CharacterController extends AbstractController
 {
     #[Route(name: 'app_character_index', methods: ['GET'])]
-    public function index(CharacterRepository $characterRepository, Request $request): Response
+    public function index(CharacterRepository $characterRepository, Request $request, CharacterClassRepository $characterClassRepository, RaceRepository $raceRepository): Response
     {
-        $search = $request->query->get('search');
+        $user = $this->getUser();
+        $classId = $request->query->get('class');
+        $raceId = $request->query->get('race');
 
-        if ($search) {
-            $character = $characterRepository->findByNameAndUser($search, $this->getUser());
+        if ($classId)
+        {
+            $characters = $characterRepository->findBy([
+                'user' => $user,
+                'class_character' => $classId
+            ], ['name' => 'ASC']);
         }
-        else {
-            $character = $characterRepository->findBy(['user' => $this->getUser()], ['name' => 'ASC']);
+        else
+        {
+            $characters = $characterRepository->findBy([
+                'user' => $user
+            ], ['name' => 'ASC']);
         }
 
-        // Returns all the characters created by the connected user
+        if ($raceId)
+        {
+            $characters = $characterRepository->findBy([
+                'user' => $user,
+                'race' => $raceId
+            ], ['name' => 'ASC']);
+        }
+        else
+        {
+            $characters = $characterRepository->findBy([
+                'user' => $user
+            ], ['name' => 'ASC']);
+        }
+
+        // Returns all the characters created by the connected user, with the option to filter by a class
         return $this->render('character/index.html.twig', [
-            'characters' => $character,
+            'characters' => $characters,
+            'classes' => $characterClassRepository->findAll(),
+            'races' => $raceRepository->findAll(),
         ]);
     }
 
