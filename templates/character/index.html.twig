@@ -4,6 +4,10 @@
 
 {% block body %}
     <h1>Character index</h1>
+    <form method="get">
+        <input type="text" name="search" placeholder="Search for a character..." value="{{ app.request.get('search') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 
     <table class="table">
         <thead>
@@ -23,6 +27,7 @@
             </tr>
         </thead>
         <tbody>
+
         {% for character in characters %}
             <tr>
                 <td>{{ character.id }}</td>

@@ -20,11 +20,20 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class CharacterController extends AbstractController
 {
     #[Route(name: 'app_character_index', methods: ['GET'])]
-    public function index(CharacterRepository $characterRepository): Response
+    public function index(CharacterRepository $characterRepository, Request $request): Response
     {
+        $search = $request->query->get('search');
+
+        if ($search) {
+            $character = $characterRepository->findByNameAndUser($search, $this->getUser());
+        }
+        else {
+            $character = $characterRepository->findBy(['user' => $this->getUser()], ['name' => 'ASC']);
+        }
+
         // Returns all the characters created by the connected user
         return $this->render('character/index.html.twig', [
-            'characters' => $characterRepository->findBy(['user' => $this->getUser()], ['name' => 'ASC']),
+            'characters' => $character,
         ]);
     }
 
