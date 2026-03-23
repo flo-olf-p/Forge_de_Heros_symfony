@@ -18,13 +18,6 @@ class CharacterClassType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('healthDice')
-            ->add('skill_characterClass', EntityType::class, [
-                'class' => Skill::class,
-                'choice_label' => function (Skill $skill) {
-                return $skill->getName() . ' (' . $skill->getAbility()->value . ')';
-                },
-                'multiple' => true,
-            ])
         ;
     }
 

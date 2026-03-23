@@ -22,6 +22,7 @@ class SkillType extends AbstractType
                 return $characterClass->getName();
                 },
                 'multiple' => true,
+                'by_reference' => false,
             ])
         ;
     }

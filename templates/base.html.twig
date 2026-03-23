@@ -22,10 +22,16 @@
                 {% if 'ROLE_ADMIN' in app.user.roles %}
                 <a href="{{ path('api_home') }}">API</a>
                 <a href="{{ path('app_character_index') }}">Your characters</a>
+                <a href="{{ path('app_party_index') }}">Party</a>
                 <a href="{{ path('admin_home') }}">Admin</a>
+                <a href="{{ path('app_race_index') }}">Races</a>
+                <a href="{{ path('app_character_class_index') }}">Class</a>
+                <a href="{{ path('app_skill_index') }}">Skills</a>
+
             {% elseif 'ROLE_USER' in app.user.roles %}
                 <a href="{{ path('api_home') }}">API</a>
                 <a href="{{ path('app_character_index') }}">Your characters</a>
+                <a href="{{ path('app_party_index') }}">Party</a>
             {% endif %}
 
             {% else %}

@@ -30,6 +30,8 @@ final class SkillController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
             $entityManager->persist($skill);
             $entityManager->flush();
 
