@@ -60,9 +60,11 @@ class CharacterRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->where('c.race = :race')
             ->andWhere('c.user = :user')
-
             ->setParameter('race', $race)
             ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 
     public function findByNameAndUser(string $name, $user): array
     {

@@ -28,21 +28,23 @@ final class CharacterController extends AbstractController
         $classId = $request->query->get('class');
         $raceId = $request->query->get('race');
 
-        if ($classId)
+        $search = $request->query->get('search');
+
+        if($search)
+        {
+            $characters = $characterRepository->findByNameAndUser($search, $user);
+
+        }
+
+        elseif ($classId)
         {
             $characters = $characterRepository->findBy([
                 'user' => $user,
                 'class_character' => $classId
             ], ['name' => 'ASC']);
         }
-        else
-        {
-            $characters = $characterRepository->findBy([
-                'user' => $user
-            ], ['name' => 'ASC']);
-        }
 
-        if ($raceId)
+        elseif ($raceId)
         {
             $characters = $characterRepository->findBy([
                 'user' => $user,
@@ -126,7 +128,7 @@ final class CharacterController extends AbstractController
         $form = $this->createForm(CharacterType::class, $character);
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted() && $character->getAvatarFileName())
+        if (!$form->isSubmitted() && $character->getAvatarFileName()) //&& $character->getAvatarFileName()
         {
             $form->setData(['avatarFile' => new File($avatarDirectory.DIRECTORY_SEPARATOR.$character->getAvatarFileName())]);
         }
