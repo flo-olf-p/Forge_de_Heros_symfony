@@ -6,3 +6,4 @@
 ";extension=fileinfo"
 - You must run the command "composer install" to install the required dependencies of the project.
 - Apply the migration to create the database with this command : "php bin/console doctrine:migrations:migrate"
+- To generate entries in the database, run the following command : "php bin/console doctrine:fixtures:load"

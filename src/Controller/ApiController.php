@@ -82,7 +82,7 @@ class ApiController extends AbstractController
     {
         $repository = $entityManager->getRepository(Party::class);
         $party = $repository->findAll();
-        return $this->json($party, 200, [], ['groups' => 'party']);
+        return $this->json($party, 200, [], ['groups' => 'character']);
     }
 
     #[Route('/api/v1/parties/{id}', name: 'api_v1_show_party', requirements: ['id' => '\d+'])]
@@ -90,7 +90,7 @@ class ApiController extends AbstractController
     {
         $repository = $entityManager->getRepository(Party::class);
         $party = $repository->find($id);
-        return $this->json($party, 200, [], ['groups' => 'party']);
+        return $this->json($party, 200, [], ['groups' => 'character']);
     }
 
     #[Route('/api/v1/skills', name: 'api_v1_skills')]
