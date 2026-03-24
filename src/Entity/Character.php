@@ -68,7 +68,7 @@ class Character
     /**
      * @var Collection<int, Party>
      */
-    #[Groups('character')]
+    #[Ignore]
     #[ORM\ManyToMany(targetEntity: Party::class, inversedBy: 'characters')]
     private Collection $party_character;
     #[Groups('character')]
