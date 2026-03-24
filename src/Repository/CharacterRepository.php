@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Character;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,7 +45,7 @@ class CharacterRepository extends ServiceEntityRepository
     public function findByClassAndUser(string $class, $user): array
     {
         return $this->createQueryBuilder('c')
-            ->where('c.character_class = :class')
+            ->where('c.class_character = :class')
             ->andWhere('c.user = :user')
 
             ->setParameter('class', $class)
@@ -73,6 +74,33 @@ class CharacterRepository extends ServiceEntityRepository
             ->andWhere('c.user = :user')
             ->setParameter('search', '%' . $name . '%')
             ->setParameter('user', $user)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByFilters($user, ?string $search, ?string $classId, ?string $raceId): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user);
+
+        if ($search) {
+            $qb->andWhere('c.name LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        if ($classId) {
+            $qb->andWhere('c.class_character = :class')
+                ->setParameter('class', $classId);
+        }
+
+        if ($raceId) {
+            $qb->andWhere('c.race = :race')
+                ->setParameter('race', $raceId);
+        }
+
+        return $qb
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();

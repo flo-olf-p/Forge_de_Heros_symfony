@@ -47,6 +47,24 @@
                 <th>HealthPoints</th>
                 <td>{{ character.healthPoints }}</td>
             </tr>
+            <tr>
+                <th>Avatar</th>
+                <td>
+                    {% if character.avatarFileName %}
+                        <img src="{{ asset('uploads/avatars/' ~ character.avatarFileName) }}" alt="{{ character.name }}" width="150">
+                    {% else %}
+                        <span>No avatar</span>
+                    {% endif %}</td>
+                </td>
+            </tr>
+            <tr>
+                <th>Race</th>
+                <td>{{ character.race.name }}</td>
+            </tr>
+            <tr>
+                <th>Class</th>
+                <td>{{ character.classCharacter.name }}</td>
+            </tr>
         </tbody>
     </table>
 
