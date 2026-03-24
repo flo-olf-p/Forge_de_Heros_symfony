@@ -48,6 +48,7 @@
                 <th>Charisma</th>
                 <th>HealthPoints</th>
                 <th>Race</th>
+                <th>Class</th>
                 <th>Avatar</th>
                 <th>actions</th>
             </tr>
@@ -67,6 +68,7 @@
                 <td>{{ character.charisma }}</td>
                 <td>{{ character.healthPoints }}</td>
                 <td>{{ character.race.name }}</td>
+                <td>{{ character.classCharacter.name }}</td>
                 <td>
                     {% if character.avatarFileName %}
                         <img src="{{ asset('uploads/avatars/' ~ character.avatarFileName) }}" alt="{{ character.name }}" width="75">
