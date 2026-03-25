@@ -4,6 +4,8 @@
 {% block body %}
     <h1>Welcome on our application!</h1>
 
+    <p>From here, you can navigate through the application and access certain pages according to your role and status! </p>
+
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
             <a href="{{ path('api_home') }}">Access to the API</a>

@@ -3,4 +3,13 @@
 
 {% block body %}
     <h1>Welcome to our api!</h1>
+
+    <p>To access a particular element of a class, add the id of the element at the end of the URI. </p>
+
+    <a href="{{ path('api_v1_races') }}">Get all races</a>
+    <a href="{{ path('api_v1_classes') }}">Get all characters' classes</a>
+    <a href="{{ path('api_v1_characters') }}">Get all characters</a>
+    <a href="{{ path('api_v1_party') }}">Get all parties</a>
+    <a href="{{ path('api_v1_skills') }}">Get all skills</a>
+
 {% endblock %}
