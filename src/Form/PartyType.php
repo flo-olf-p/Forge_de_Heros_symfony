@@ -19,7 +19,7 @@ class PartyType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('maxSize')
+            ->add('maxSize', null, ['attr' => ['min' => 1]])
             ->add('characters', EntityType::class, [
                 'class' => Character::class,
                 'choice_label' => fn($c) => $c->getName() . ' (' . $c->getClassCharacter()->getName() . ')',
